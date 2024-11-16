@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Network—COMP9900</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 100vh;
+            color: #333;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            overflow: hidden;
+            position: relative;
+        }
+        .login-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+            z-index: 10;
+            overflow: hidden;
+        }
+        .title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .title-container img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        h2 {
+            text-align: center;
+            margin: 0;
+            color: #333;
+        }
+        .btn-primary {
+            width: 100%;
+            padding: 10px;
+        }
+        .extra-options {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .extra-options a {
+            flex: 1;
+            text-align: center;
+            margin: 5px 0;
+            color: #2575fc;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .extra-options a:hover {
+            text-decoration: underline;
+            color: #6a11cb;
+        }
+        footer {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            text-align: center;
+            width: 100%;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .footer-background {
+            background-image: url('https://easyv.assets.dtstack.com/data/assets/dqjk3qvzz6_1630496453799_n1d7abjt78.jpeg');
+            background-size: cover;
+            background-position: center;
+            height: 100px;
+            border-radius: 15px;
+        }
+        /* Food Bubble Effect */
+            .bubble {
+                position: absolute;
+                background-size: cover;
+                background-position: center;
+                width: 60px;  /* Increase size */
+                height: 60px; /* Increase size */
+                border-radius: 50%;
+                animation: bubble-animation 30s infinite linear; /* Increase duration for slower speed */
+                opacity: 0.9;
+                z-index: 1;
+            }
+
+        @keyframes bubble-animation {
+            0% {
+                transform: translate(calc(100vw * var(--random-x)), calc(100vh * var(--random-y)));
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.9;
+            }
+            100% {
+                transform: translate(calc(100vw * (var(--random-x-end) - 0.5)), calc(-100vh * (var(--random-y-end) + 1)));
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <div class="title-container">
+    {% load static %}
+    <img src="{% static 'images/logo.png' %}" alt="Feed Backer Logo" style="width: 200px; height: 100px;">
+
+    </div>
+    <form method="post" action="/myapp/login">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+
+    <!-- Register and Password Recovery Buttons -->
+    <div class="mt-3 extra-options">
+        <a href="/myapp/regist" class="btn btn-link">Register</a>
+        <a href="/myapp/admin_login" class="btn btn-link">Admin</a>
+        <a href="/myapp/password_reset" class="btn btn-link">Forgot?</a>
+    </div>
+</br>
+
+    <p style="text-align: center;">&copy; 2024 FeedBacker. All rights reserved.</p>
+    <p style="text-align: center;">:D Team 9900</p>
+</div>
+
+<!-- Food Bubble Effect -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const foodImages = [
+            "https://th.bing.com/th/id/OIP.sYS2mNhZK5VjcJAoMUcGUAHaE7?w=282&h=188&c=7&r=0&o=5&pid=1.7", // Replace with the actual URLs for food images
+            "https://th.bing.com/th/id/OIP.5LkT8IqV2V9y411Bx2HPoAHaE8?w=238&h=180&c=7&r=0&o=5&pid=1.7",
+            "https://th.bing.com/th/id/OIP.Ijh2VYrMd6WUmh4D1P1O_wHaGJ?w=223&h=185&c=7&r=0&o=5&pid=1.7",
+            "https://th.bing.com/th/id/OIP.VUflddZKP__jgxP1Mu-a8wHaEJ?w=295&h=180&c=7&r=0&o=5&pid=1.7",
+            "https://th.bing.com/th/id/OIP.vf4xAeEFpeoW4jMZQAEbSwHaHa?w=178&h=180&c=7&r=0&o=5&pid=1.7",
+            "https://th.bing.com/th/id/OIP.5f-Y0ENKTjyxA8QWeq2ajwHaLG?w=203&h=304&c=7&r=0&o=5&pid=1.7",
+            "https://th.bing.com/th/id/OIP.VaZzyng5-MInmdiAIjx-VQHaE7?w=267&h=180&c=7&r=0&o=5&pid=1.7"
+        ];
+        for (let i = 0; i < 50; i++) {
+            const bubble = document.createElement("div");
+            bubble.classList.add("bubble");
+            bubble.style.setProperty("--random-x", Math.random());
+            bubble.style.setProperty("--random-y", Math.random());
+            bubble.style.setProperty("--random-x-end", Math.random());
+            bubble.style.setProperty("--random-y-end", Math.random());
+            const randomFood = foodImages[Math.floor(Math.random() * foodImages.length)];
+            bubble.style.backgroundImage = `url('${randomFood}')`;
+            document.body.appendChild(bubble);
+        }
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

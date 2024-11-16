@@ -1,0 +1,107 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1/css/bootstrap.css' %}">
+    <title>{% block title %}Admin Dashboard{% endblock %}</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 200px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #2c3e50;
+            overflow-x: hidden;
+            padding-top: 20px;
+        }
+
+        .sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 18px;
+            color: white;
+            display: block;
+        }
+
+        .sidebar a:hover {
+            color: #f1f1f1;
+        }
+
+        .main-content {
+            margin-left: 200px;
+            padding: 20px;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 10px 20px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .navbar a:hover {
+            opacity: 0.7;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        {% block style %}{% endblock %}
+    </style>
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+<div class="sidebar">
+    <a href="/myapp/user_list">User Management</a>
+    <a href="/myapp/admin/posts">Manage Posts</a>  <!-- 新增：管理帖子 -->
+    <a href="/myapp/admin/comments">Manage Comments</a>  <!-- 新增：管理评论 -->
+    <a href="/myapp/admin/loops">Manage Loops</a>  <!-- 新增：管理圈子 -->
+    <a href="/myapp/login">Logout</a>
+</div>
+
+<div class="main-content">
+    <div class="navbar">
+        <div class="dropdown">
+            <div class="dropdown-content">
+                <a href="/myapp/login">Logout</a>
+            </div>
+        </div>
+    </div>
+    {% block content %}{% endblock %}
+</div>
+
+{% block javascript %}
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<script src="{% static 'plugins/bootstrap-3.4.1/js/bootstrap.js' %}"></script>
+{% endblock %}
+
+</body>
+</html>

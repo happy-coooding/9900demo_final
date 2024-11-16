@@ -1,0 +1,31 @@
+{% extends 'layout.html' %}
+
+{% block title %}View Comments{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>All Comments</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Post</th>
+                <th>Author</th>
+                <th>Content</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for comment in comments %}
+            <tr>
+                <td>{{ comment.post.title }}</td>
+                <td>{{ comment.author.username }}</td>
+                <td>{{ comment.content }}</td>
+                <td>
+                    <a href="/myapp/admin_delete_comment/{{comment.id}}" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

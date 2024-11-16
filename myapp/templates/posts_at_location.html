@@ -1,0 +1,32 @@
+{% extends "guest_layout.html" %}
+
+{% block title %}Posts at {{ location }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4" style="font-size: 2rem; color: #4a4a4a; text-align: center;">Posts at {{ location }}</h2>
+    {% if average_rating %}
+        <p class="text-center" style="font-size: 1.2rem; color: #888;">Average Rating: {{ average_rating|floatformat:1 }} / 5</p>
+    {% else %}
+        <p class="text-center" style="font-size: 1.2rem; color: #888;">No ratings available for this location.</p>
+    {% endif %}
+
+    {% for post in posts %}
+    <div class="card mb-4 shadow-sm" style="border-radius: 15px;">
+        <div class="card-body">
+            <h5 class="card-title" style="font-size: 1.5rem; color: #333;">{{ post.title }}</h5>
+            <p class="card-text" style="font-size: 1rem; color: #555;">{{ post.content }}</p>
+            <p class="card-text"><strong>By:</strong> {{ post.author.username }}</p>
+            {% if post.loop %}
+                <p class="card-text"><strong>Group:</strong> {{ post.loop.name }}</p>
+            {% endif %}
+            {% if post.rating %}
+                <p class="card-text"><strong>Rating:</strong> {{ post.rating }} / 5</p>
+            {% else %}
+                <p class="card-text"><strong>Rating:</strong> Not rated</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends "guest_layout.html" %}
+
+{% block title %}Explore Locations{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4" style="font-size: 2rem; color: #4a4a4a; text-align: center;">Explore Locations</h2>
+    <div id="wordCloudContainer" style="width: 100%; height: 500px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); position: relative; overflow: hidden;"></div>
+    <div id="tooltip" style="position: fixed; padding: 10px; background: rgba(0, 0, 0, 0.7); color: white; border-radius: 5px; pointer-events: none; display: none;"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.5/d3.layout.cloud.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const wordCloudContainer = d3.select("#wordCloudContainer");
+        const tooltip = d3.select("#tooltip");
+        const width = wordCloudContainer.node().clientWidth;
+        const height = wordCloudContainer.node().clientHeight;
+
+        // 将 Django 传递的 locations 转为 JavaScript 对象
+        const locations = {{ locations|safe }};
+
+        const data = locations.map(location => ({
+            text: location.location,
+            size: Math.random() * 40 + 20,
+            count: location.post_count,
+            likes: location.total_likes,
+            comments: location.total_comments
+        }));
+
+        const drawWordCloud = () => {
+            d3.layout.cloud()
+                .size([width, height])
+                .words(data)
+                .padding(5)
+                .rotate(() => 0)  // Ensure all text is horizontal
+                .font("Impact")
+                .fontSize(d => d.size)
+                .on("end", draw)
+                .start();
+        };
+
+        const draw = words => {
+            wordCloudContainer.selectAll("svg").remove();
+
+            const svg = wordCloudContainer.append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+            svg.selectAll("text")
+                .data(words)
+                .enter().append("text")
+                .style("font-size", d => d.size + "px")
+                .style("font-family", "Impact")
+                .style("fill", () => d3.schemeCategory10[Math.floor(Math.random() * 10)])
+                .attr("text-anchor", "middle")
+                .attr("transform", d => `translate(${d.x}, ${d.y})`)
+                .text(d => d.text)
+                .style("cursor", "pointer")
+                .on("click", d => {
+                    window.location.href = `/myapp/posts_at_location/?location=${encodeURIComponent(d.text)}`;
+                })
+                .on("mouseover", function(event, d) {
+                    tooltip.style("display", "block")
+                           .html("Click and Explore!")  // 修改为只显示 "explore!"
+                           .style("top", "10px")
+                           .style("left", "50%")
+                           .style("transform", "translateX(-50%)");
+                })
+                .on("mouseout", function() {
+                    tooltip.style("display", "none");
+                });
+
+            // Make words float around dynamically
+            svg.selectAll("text").transition()
+                .duration(2000)
+                .ease(d3.easeLinear)
+                .attr("transform", function(d) {
+                    d.x += (Math.random() - 0.5) * 20;
+                    d.y += (Math.random() - 0.5) * 20;
+                    return `translate(${d.x}, ${d.y})`;
+                })
+                .on("end", function() {
+                    d3.select(this).call(floatingText);
+                });
+        };
+
+        const floatingText = selection => {
+            selection.transition()
+                .duration(2000)
+                .ease(d3.easeLinear)
+                .attr("transform", function(d) {
+                    d.x += (Math.random() - 0.5) * 20;
+                    d.y += (Math.random() - 0.5) * 20;
+                    return `translate(${d.x}, ${d.y})`;
+                })
+                .on("end", function() {
+                    d3.select(this).call(floatingText);
+                });
+        };
+
+        drawWordCloud();
+
+        window.addEventListener('resize', function () {
+            drawWordCloud();
+        });
+    });
+</script>
+{% endblock %}

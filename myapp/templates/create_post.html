@@ -1,0 +1,65 @@
+{% extends "guest_layout.html" %}
+
+{% block content %}
+<div class="container" style="margin-top: 50px;">
+    <h2>Create a Backer Log</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" name="title" required>
+        </div>
+        <div class="mb-3">
+            <label for="content" class="form-label">Content</label>
+            <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="location" class="form-label">Location</label>
+            <input type="text" class="form-control" id="location" name="location" autocomplete="off" onkeyup="fetchLocations(this.value)">
+            <div id="locationSuggestions" class="list-group position-absolute" style="width: 320px; z-index: 1000; background: linear-gradient(135deg, #ff7e5f, #feb47b);"></div>
+        </div>
+        <div class="mb-3">
+            <label for="price_range" class="form-label">Price Range</label>
+            <input type="text" class="form-control" id="price_range" name="price_range">
+        </div>
+        <div class="mb-3">
+            <label for="cuisine" class="form-label">Cuisine</label>
+            <input type="text" class="form-control" id="cuisine" name="cuisine" placeholder="e.g., Italian, Chinese">
+        </div>
+        <div class="mb-3">
+            <label for="image" class="form-label">Upload Image</label>
+            <input type="file" class="form-control" id="image" name="image">
+        </div>
+        <div class="mb-3">
+            <label for="rating" class="form-label">Rating</label>
+            <input type="number" class="form-control" id="rating" name="rating" min="0" max="5" step="0.1"
+                   placeholder="0 - 5">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+<script>
+    function fetchLocations(query) {
+        if (query.length < 1) {
+            document.getElementById("locationSuggestions").innerHTML = "";
+            return;
+        }
+
+        fetch(`/myapp/location_suggestions/?query=${query}`)
+            .then(response => response.json())
+            .then(data => {
+                let suggestions = '';
+                data.forEach(location => {
+                    suggestions += `<a href="javascript:void(0);" class="list-group-item list-group-item-action" onclick="selectLocation('${location}')">${location}</a>`;
+                });
+                document.getElementById("locationSuggestions").innerHTML = suggestions;
+            });
+    }
+
+    function selectLocation(location) {
+        document.getElementById("location").value = location;
+        document.getElementById("locationSuggestions").innerHTML = "";
+    }
+</script>
+{% endblock %}

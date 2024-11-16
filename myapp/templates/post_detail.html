@@ -1,0 +1,49 @@
+{% extends "guest_layout.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-sm mb-4" style="border-radius: 15px;">
+        <div class="card-body">
+            <h2 class="text-center mb-3">{{ post.title }}</h2>
+            {% if post.image %}
+            <div class="text-center">
+                <img src="{{ post.image.url }}" class="img-fluid rounded mb-3" alt="{{ post.title }}">
+            </div>
+            {% endif %}
+            <p class="card-text">{{ post.content }}</p>
+            <p><strong>📍 Location:</strong> {{ post.location }}</p>
+            <p><strong>🍜 Cuisine:</strong> {{ post.cuisine }}</p>
+            <p><strong>💲 Per:</strong> {{ post.price_range }}</p>
+        </div>
+    </div>
+
+    <div class="card shadow-sm" style="border-radius: 15px;">
+        <div class="card-body">
+            <h4 class="mb-4">💬 Comments</h4>
+            {% for comment in comments %}
+            <div class="mb-3 p-3 rounded" style="background-color: #f8f9fa;">
+                <p><strong>{{ comment.author.username }}</strong>:</p>
+                <p>{{ comment.content }}</p>
+                <p class="text-muted small">{{ comment.created_at }}</p>
+            </div>
+            {% empty %}
+            <p class="text-center text-muted">No comments available.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Add Comment -->
+    <div class="card shadow-sm mt-4" style="border-radius: 15px;">
+        <div class="card-body">
+            <h4 class="mb-4">✍️ Add Comment</h4>
+            <form method="POST" action="">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <textarea class="form-control" name="content" rows="3" placeholder="Write your comment..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Post Comment</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
